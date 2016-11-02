@@ -1,16 +1,17 @@
 package gdx.ani.desktop;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import gdx.oneB.GamOneB;
-import gdx.oneB.GdxAni;
+
+import gdx.oneB.SonicLoop;
 
 public class DesktopLauncher {
 
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        new LwjglApplication(new GamOneB(), config);
-        config.height = 800;
-        config.width = 1000;
+        new LwjglApplication((ApplicationListener) new SonicLoop() {}, config);
+        config.height = 400;
+        config.width = 700;
     }
 }
