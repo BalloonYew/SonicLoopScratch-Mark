@@ -19,12 +19,13 @@ public class SonicLoop implements ApplicationListener {
     float SAMPLE_POINT_DISTANCE = 1f / SAMPLE_POINTS;
     SpriteBatch Batch;
     ImmediateModeRenderer20 renderer;
-    Sprite obj;
+    Sprite SprSonic, loop;
     Array<Path<Vector2>> paths = new Array<Path<Vector2>>();
     int currentPath = 0;
     float t;
+    int mouseY;
     Vector2 vSonic = new Vector2();
-    float x, y = 50, dDy, fSY, fSX, fBX = 50, fBY = 30, fSx, fDy;
+    float x, y = 120, dDy, fSY, fSX, fBX = 50, fBY = 30, fSx, fDy;
     float speed = 0.3f;
     Vector2 vChar = new Vector2();
 
@@ -33,13 +34,17 @@ public class SonicLoop implements ApplicationListener {
         vSonic.add(x, y);
         renderer = new ImmediateModeRenderer20(false, false, 0);
         Batch = new SpriteBatch();
-        obj = new Sprite(new Texture(Gdx.files.internal("5.png")));
-        obj.setSize(40, 40);
-        obj.setOriginCenter();
+        loop = new Sprite(new Texture(Gdx.files.internal("loopdeloop.png")));
+        loop.setSize(510, 500);
+        loop.setOriginCenter();
+
+        SprSonic = new Sprite(new Texture(Gdx.files.internal("5.png")));
+        SprSonic.setSize(40, 40);
+        SprSonic.setOriginCenter();
 
         //draws the points on the path
-        Vector2 cp[] = new Vector2[]{new Vector2(100, 50), new Vector2(100, 50), new Vector2(400, 50), new Vector2(400, 250),
-            new Vector2(200, 250), new Vector2(200, 50), new Vector2(500, 50), new Vector2(500, 50)};
+        Vector2 cp[] = new Vector2[]{new Vector2(200, 120), new Vector2(200, 120),  new Vector2(425, 130), new Vector2(523, 182), new Vector2(560, 290),new Vector2(529, 374), new Vector2(430, 420), new Vector2(324, 379), new Vector2(285, 275),
+            new Vector2(330, 178), new Vector2(425, 130), new Vector2(650, 120), new Vector2(650, 120)};
 
 
         paths.add(new CatmullRomSpline<Vector2>(cp, false));
@@ -56,16 +61,19 @@ public class SonicLoop implements ApplicationListener {
 
     @Override
     public void render() {
-       
+
+        mouseY = -Gdx.input.getY() + 600;
+
+        loop.setPosition(190, -10);
         fSY = vChar.y;
         fSX = vChar.x;
 
         vSonic.add(fSx, fDy);
-        obj.setPosition(vSonic.x, vSonic.y);
+        SprSonic.setPosition(vSonic.x, vSonic.y);
         GL20 gl = Gdx.gl20;
-         gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
+        gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
         gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        obj.setRotation(0);
+        SprSonic.setRotation(0);
 
         //movement
         if (fSx > 0) {
@@ -95,21 +103,22 @@ public class SonicLoop implements ApplicationListener {
             paths.get(currentPath).valueAt(tmpV, t);
             //rotation
             paths.get(currentPath).derivativeAt(tmpV2, t);
-            obj.setRotation(tmpV2.angle());
+            SprSonic.setRotation(tmpV2.angle());
 
             if (t > 1) {
-                vSonic.x = 500;
-                obj.setPosition(vSonic.x, vSonic.y);
+                vSonic.x = 650;
+                SprSonic.setPosition(vSonic.x, 120);
             } else {
                 vSonic.x = 100;
-                obj.setPosition(tmpV.x, tmpV.y);
+                SprSonic.setPosition(tmpV.x, tmpV.y);
 
             }
         } else {
             t = 0;
         }
 
-
+        System.out.println(" mX " + Gdx.input.getX());
+        System.out.println(" mY " + mouseY);
 
         System.out.println(t + " T-Value");
         System.out.println(" X= " + tmpV.x);
@@ -119,8 +128,6 @@ public class SonicLoop implements ApplicationListener {
 
         System.out.println(" X2= " + vSonic.x);
         System.out.println(" Y2= " + vSonic.y);
-
-
 //draws the Path
 
         renderer.begin(Batch.getProjectionMatrix(), GL20.GL_LINE_STRIP);
@@ -135,7 +142,8 @@ public class SonicLoop implements ApplicationListener {
 
 //draws Sonic
         Batch.begin();
-        obj.draw(Batch);
+        SprSonic.draw(Batch);
+        loop.draw(Batch);
         Batch.end();
     }
 
